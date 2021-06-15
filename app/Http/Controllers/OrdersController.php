@@ -3,9 +3,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Commands\SelectDeliveryCommand;
 use App\Commands\SelectProductCommand;
+use App\Handlers\SelectDeliveryHandler;
 use App\Handlers\SelectProductHandler;
+use App\Projectors\DeliveryProjector;
 use App\Projectors\ProductProjector;
+use App\Repositories\DeliveryRepository;
 use App\Repositories\ProductRepository;
 use Broadway\CommandHandling\SimpleCommandBus;
 use Broadway\EventHandling\SimpleEventBus;
@@ -28,13 +32,23 @@ class OrdersController extends Controller
     {
         $inMemoryRepository = new InMemoryRepository();
         $productProjector = new ProductProjector($inMemoryRepository);
-        $command = new SelectProductCommand($request->orderedProduct);
+        $productCommand = new SelectProductCommand($request->orderedProduct);
+
+        $eventStore = new InMemoryEventStore();
 
         $eventBus->subscribe($productProjector);
-        $commandHandler = new SelectProductHandler(new ProductRepository(new InMemoryEventStore(), $eventBus, []));
-        $commandBus->subscribe($commandHandler);
+        $productCommandHandler = new SelectProductHandler(new ProductRepository($eventStore, $eventBus));
+        $commandBus->subscribe($productCommandHandler);
 
-        $commandBus->dispatch($command);
+        $commandBus->dispatch($productCommand);
+        $deliveryProjector = new DeliveryProjector($inMemoryRepository);
+        $eventBus->subscribe($deliveryProjector);
+
+        $deliveryCommand = new SelectDeliveryCommand($request->delivery);
+        $deliveryCommandHandler = new SelectDeliveryHandler(new DeliveryRepository($eventStore, $eventBus));
+
+        $commandBus->subscribe($deliveryCommandHandler);
+        $commandBus->dispatch($deliveryCommand);
         $this->listProduct($eventBus, $inMemoryRepository);
     }
 }

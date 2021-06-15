@@ -10,7 +10,7 @@ use Broadway\ReadModel\Repository;
 
 class ProductProjector extends Projector
 {
-    public function __construct(public Repository $productRepository) { }
+    public function __construct(public Repository $repository) { }
 
     protected function applyProductSelected(ProductSelected $productCreated): void
     {
@@ -18,12 +18,12 @@ class ProductProjector extends Projector
             $productCreated->id
         );
 
-        $this->productRepository->save($product);
+        $this->repository->save($product);
     }
 
     public function printProduct()
     {
-        dd($this->productRepository);
+        dd($this->repository);
     }
 
 //    private function loadReadModel($id)

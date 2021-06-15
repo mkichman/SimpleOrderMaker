@@ -25,14 +25,17 @@ Route::get('/products', function () {
     ]);
 });
 
-Route::post('/products', [OrdersController::class, 'addProduct']);
 
-Route::get('/colors', function () {
-    $colors = json_decode(file_get_contents(base_path('resources/json/colors.json')));
-    return view('colors')->with([
-        'colors' => $colors
+Route::get('/placeOrder', function () {
+    $products = json_decode(file_get_contents(base_path('resources/json/products.json')));
+    $delivery = json_decode(file_get_contents(base_path('resources/json/delivery.json')));
+    return view('order')->with([
+        'products' => $products,
+        'delivery' => $delivery
     ]);
 });
+
+Route::post('/placeOrder', [OrdersController::class, 'addProduct']);
 
 Route::get('/delivery', function () {
     $delivery = json_decode(file_get_contents(base_path('resources/json/delivery.json')));

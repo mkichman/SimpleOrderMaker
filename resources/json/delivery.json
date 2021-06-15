@@ -1,17 +1,22 @@
 {
     "0": {
+        "id": 12,
         "name": "Fedex"
     },
     "1": {
+        "id": 13,
         "name": "DPD"
     },
     "2": {
+        "id": 14,
         "name": "Inpost"
     },
     "3": {
+        "id": 15,
         "name": "Local post"
     },
     "4": {
+        "id": 16,
         "name": "None"
     }
 }

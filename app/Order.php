@@ -9,7 +9,6 @@ use Broadway\EventSourcing\EventSourcedAggregateRoot;
 
 class Order extends EventSourcedAggregateRoot
 {
-
     private string $id;
 
     private int $productId;

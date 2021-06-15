@@ -14,8 +14,6 @@ class Product extends EventSourcedAggregateRoot implements Identifiable
     public static function create(string $id): self
     {
         $product = new self();
-
-
         $product->apply(
             new ProductSelected($id));
 
@@ -25,7 +23,6 @@ class Product extends EventSourcedAggregateRoot implements Identifiable
 
     public function getAggregateRootId(): string
     {
-
         return $this->id;
     }
 

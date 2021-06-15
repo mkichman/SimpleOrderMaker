@@ -6,5 +6,5 @@ namespace App\Commands;
 
 final class SelectDeliveryCommand
 {
-    public int $commandId;
+    public function __construct(public int $deliveryId) {}
 }

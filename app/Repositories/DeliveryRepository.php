@@ -3,13 +3,13 @@
 
 namespace App\Repositories;
 
-use App\Product;
+use App\Delivery;
 use Broadway\EventHandling\EventBus;
 use Broadway\EventSourcing\AggregateFactory\NamedConstructorAggregateFactory;
 use Broadway\EventSourcing\EventSourcingRepository;
 use Broadway\EventStore\EventStore;
 
-class ProductRepository extends EventSourcingRepository
+class DeliveryRepository extends EventSourcingRepository
 {
     public function __construct(
         EventStore $eventStore,
@@ -19,23 +19,8 @@ class ProductRepository extends EventSourcingRepository
         parent::__construct(
             $eventStore,
             $eventBus,
-            Product::class,
+            Delivery::class,
             new NamedConstructorAggregateFactory(),
             $eventStreamDecorators);
-
     }
-
-//    public function get(Order $order): ?Order
-//    {
-//        $order = $this->eventSourcingRepository->load($order->get());
-//
-//        return $order;
-//    }
-
-//    public function save(AggregateRoot $product): void
-//    {
-//        $this->eventSourcingRepository->save($product);
-//
-//        dd($this->eventSourcingRepository->find(123));
-//    }
 }

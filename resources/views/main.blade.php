@@ -23,7 +23,7 @@
 <body class="antialiased">
 
 <a href="/" class="ml-4"> Home </a>
-<a href="/products" class="ml-4"> Start order </a>
+<a href="/placeOrder" class="ml-4"> Start order </a>
 
 @yield('content')
 
