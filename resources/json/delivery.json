@@ -1,0 +1,17 @@
+{
+    "0": {
+        "name": "Fedex"
+    },
+    "1": {
+        "name": "DPD"
+    },
+    "2": {
+        "name": "Inpost"
+    },
+    "3": {
+        "name": "Local post"
+    },
+    "4": {
+        "name": "None"
+    }
+}
