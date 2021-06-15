@@ -12,15 +12,14 @@ class Order extends EventSourcedAggregateRoot
     private string $id;
 
     private int $productId;
-    private int $colorId;
     private int $deliveryId;
 
-    public static function create(string $id, int $productId, int $colorId, int $deliveryId)
+    public static function create(string $id, int $productId, int $deliveryId)
     {
         $order = new self();
 
         $order->apply(
-            new OrderCreated($id, $productId, $colorId, $deliveryId)
+            new OrderCreated($id, $productId, $deliveryId)
         );
 
         return $order;
@@ -43,14 +42,6 @@ class Order extends EventSourcedAggregateRoot
     /**
      * @return int
      */
-    public function getColorId(): int
-    {
-        return $this->colorId;
-    }
-
-    /**
-     * @return int
-     */
     public function getDeliveryId(): int
     {
         return $this->deliveryId;
@@ -60,7 +51,6 @@ class Order extends EventSourcedAggregateRoot
     {
         $this->id           = $event->id;
         $this->productId    = $event->productId;
-        $this->colorId      = $event->colorId;
         $this->deliveryId   = $event->deliveryId;
     }
 }

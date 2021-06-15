@@ -8,7 +8,7 @@ use Broadway\ReadModel\SerializableReadModel;
 
 final class Order implements SerializableReadModel
 {
-    public function __construct(public string $id, public int $productId, public int $colorId, public int $deliveryId) {}
+    public function __construct(public string $id, public int $productId, public int $deliveryId) {}
 
     public function getId(): string
     {
@@ -20,7 +20,6 @@ final class Order implements SerializableReadModel
         return new static(
             $data['id'],
             $data['productId'],
-            $data['colorId'],
             $data['deliveryId']
         );
     }
@@ -30,7 +29,6 @@ final class Order implements SerializableReadModel
         return [
             'id'            => $this->id,
             'productId'     => $this->productId,
-            'colorId'       => $this->colorId,
             'deliveryId'    => $this->deliveryId
         ];
     }
@@ -49,13 +47,5 @@ final class Order implements SerializableReadModel
     public function getProductId(): int
     {
         return $this->productId;
-    }
-
-    /**
-     * @return int
-     */
-    public function getColorId(): int
-    {
-        return $this->colorId;
     }
 }

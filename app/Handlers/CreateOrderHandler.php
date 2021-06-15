@@ -17,7 +17,6 @@ class CreateOrderHandler extends SimpleCommandHandler
         $order = Order::create(
             $createOrderCommand->id,
             $createOrderCommand->productId,
-            $createOrderCommand->colorId,
             $createOrderCommand->deliveryId
         );
         $this->orderRepository->save($order);

@@ -18,14 +18,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/products', function () {
-    $products = json_decode(file_get_contents(base_path('resources/json/products.json')));
-    return view('products')->with([
-        'products' => $products
-    ]);
-});
-
-
 Route::get('/placeOrder', function () {
     $products = json_decode(file_get_contents(base_path('resources/json/products.json')));
     $delivery = json_decode(file_get_contents(base_path('resources/json/delivery.json')));
@@ -35,18 +27,8 @@ Route::get('/placeOrder', function () {
     ]);
 });
 
-Route::post('/placeOrder', [OrdersController::class, 'addProduct']);
-
-Route::get('/delivery', function () {
-    $delivery = json_decode(file_get_contents(base_path('resources/json/delivery.json')));
-    return view('delivery')->with([
-        'delivery' => $delivery
-    ]);
-});
-
+Route::post('/placeOrder', [OrdersController::class, 'placeOrder']);
 
 Route::get('/finish', function () {
     return redirect('/')->with('success', 'Order placed successfully');
 });
-
-Route::get('/orders', [OrdersController::class, 'listProduct'])->name('orders');

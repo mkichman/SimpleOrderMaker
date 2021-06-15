@@ -23,16 +23,4 @@ class OrderRepository extends EventSourcingRepository
             new NamedConstructorAggregateFactory(),
             $eventStreamDecorators);
     }
-
-//    public function get(Order $order): ?Order
-//    {
-//        $order = $this->eventSourcingRepository->load($order->get());
-//
-//        return $order;
-//    }
-
-    public function save(AggregateRoot $order): void
-    {
-        $this->eventSourcingRepository->save($order);
-    }
 }

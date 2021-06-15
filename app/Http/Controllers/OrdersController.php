@@ -8,6 +8,7 @@ use App\Commands\SelectProductCommand;
 use App\Handlers\SelectDeliveryHandler;
 use App\Handlers\SelectProductHandler;
 use App\Projectors\DeliveryProjector;
+use App\Projectors\OrderProjector;
 use App\Projectors\ProductProjector;
 use App\Repositories\DeliveryRepository;
 use App\Repositories\ProductRepository;
@@ -20,35 +21,58 @@ use Illuminate\Http\Request;
 
 class OrdersController extends Controller
 {
-    public function listProduct(SimpleEventBus $eventBus, InMemoryRepository $repository)
-    {
-        $productProjector = new ProductProjector($repository);
-        $eventBus->subscribe($productProjector);
+    public InMemoryRepository $inMemoryRepository;
+    public SimpleCommandBus $commandBus;
+    public SimpleEventBus $eventBus;
+    public InMemoryEventStore $eventStore;
 
-        $productProjector->printProduct();
+    public function __construct(SimpleCommandBus $commandBus, SimpleEventBus $eventBus)
+    {
+        $this->inMemoryRepository   = new InMemoryRepository();
+        $this->commandBus           = $commandBus;
+        $this->eventBus             = $eventBus;
+        $this->eventStore           = new InMemoryEventStore();
     }
 
-    public function addProduct(SimpleCommandBus $commandBus, Request $request, SimpleEventBus $eventBus)
+    public function listOrderItems()
     {
-        $inMemoryRepository = new InMemoryRepository();
-        $productProjector = new ProductProjector($inMemoryRepository);
-        $productCommand = new SelectProductCommand($request->orderedProduct);
+        $orderProjector = new OrderProjector($this->inMemoryRepository);
+        $orderProjector->printOrderItems();
+    }
 
-        $eventStore = new InMemoryEventStore();
+    public function placeOrder(Request $request)
+    {
+        if(empty($request))
+        {
+            return;
+        }
+        $this->registerProductEvent($request->orderedProduct);
+        $this->registerDeliveryEvent($request->delivery);
 
-        $eventBus->subscribe($productProjector);
-        $productCommandHandler = new SelectProductHandler(new ProductRepository($eventStore, $eventBus));
-        $commandBus->subscribe($productCommandHandler);
+        $this->listOrderItems();
+    }
 
-        $commandBus->dispatch($productCommand);
-        $deliveryProjector = new DeliveryProjector($inMemoryRepository);
-        $eventBus->subscribe($deliveryProjector);
+    public function registerProductEvent($orderedProduct)
+    {
+        $productProjector = new ProductProjector($this->inMemoryRepository);
+        $productCommand = new SelectProductCommand($orderedProduct);
 
-        $deliveryCommand = new SelectDeliveryCommand($request->delivery);
-        $deliveryCommandHandler = new SelectDeliveryHandler(new DeliveryRepository($eventStore, $eventBus));
+        $this->eventBus->subscribe($productProjector);
+        $productCommandHandler = new SelectProductHandler(new ProductRepository($this->eventStore,   $this->eventBus));
 
-        $commandBus->subscribe($deliveryCommandHandler);
-        $commandBus->dispatch($deliveryCommand);
-        $this->listProduct($eventBus, $inMemoryRepository);
+        $this->commandBus->subscribe($productCommandHandler);
+        $this->commandBus->dispatch($productCommand);
+    }
+
+    public function registerDeliveryEvent($orderedDelivery)
+    {
+        $deliveryProjector = new DeliveryProjector($this->inMemoryRepository);
+        $this->eventBus->subscribe($deliveryProjector);
+
+        $deliveryCommand = new SelectDeliveryCommand($orderedDelivery);
+        $deliveryCommandHandler = new SelectDeliveryHandler(new DeliveryRepository($this->eventStore, $this->eventBus));
+
+        $this->commandBus->subscribe($deliveryCommandHandler);
+        $this->commandBus->dispatch($deliveryCommand);
     }
 }
