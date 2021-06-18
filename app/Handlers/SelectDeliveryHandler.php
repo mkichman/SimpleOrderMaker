@@ -13,7 +13,7 @@ class SelectDeliveryHandler extends SimpleCommandHandler
 {
     public function __construct(public EventSourcingRepository $repository) { }
 
-    public function handleSelectDeliveryCommand (SelectDeliveryCommand $selectDeliveryCommand) :void
+    public function handleSelectDeliveryCommand(SelectDeliveryCommand $selectDeliveryCommand) :void
     {
         $delivery = Delivery::create(
             $selectDeliveryCommand->deliveryId

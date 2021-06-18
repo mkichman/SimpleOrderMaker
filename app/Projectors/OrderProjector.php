@@ -26,6 +26,8 @@ class OrderProjector extends Projector
 
     public function printOrderItems()
     {
-        dd($this->repository);
+
+//        dd(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS));
+//        dd($this->repository);
     }
 }

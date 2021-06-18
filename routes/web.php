@@ -32,3 +32,5 @@ Route::post('/placeOrder', [OrdersController::class, 'placeOrder']);
 Route::get('/finish', function () {
     return redirect('/')->with('success', 'Order placed successfully');
 });
+
+Route::get('/allOrders', [OrdersController::class, 'list']);

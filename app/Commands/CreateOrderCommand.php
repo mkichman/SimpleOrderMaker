@@ -6,7 +6,5 @@ namespace App\Commands;
 
 final class CreateOrderCommand
 {
-    public int $id;
-    public int $productId;
-    public int $deliveryId;
+    public function __construct(public int $productId, public int $deliveryId) {}
 }

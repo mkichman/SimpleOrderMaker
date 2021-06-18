@@ -19,7 +19,10 @@ class OrderServiceProvider extends ServiceProvider
 
     private function registerInMemoryRepository()
     {
-        $this->app->bind('inMemoryRepository', function() {
+        /**
+         * @todo
+         */
+        $this->app->singleton('inMemoryRepository', function() {
             return new InMemoryRepository();
         });
     }

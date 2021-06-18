@@ -3,24 +3,25 @@
 
 namespace App\Repositories;
 
-
-use App\Models\Order;
-use Broadway\ReadModel\ElasticSearch\ElasticSearchRepository;
+use App\Domain\Exception\OrderNotFoundException;
+use App\Eloquent\Transformers\OrderTransformer;
 use Broadway\ReadModel\Identifiable;
 use Broadway\ReadModel\Repository;
 
 class OrderReadRepository implements Repository
 {
-    private $repository;
+    public function __construct(private OrderTransformer $orderTransformer) { }
 
-    public function __construct(ElasticSearchRepository $repositoryFactory)
+    public function getById($id): array
     {
-        $this->repository = $repositoryFactory->create('order_repository', Order::class);
-    }
+        $order = \App\Eloquent\Models\Order::find($id);
 
-    public function save(Order|Identifiable $data): void
-    {
-        $this->repository->save($data);
+        if(null === $order)
+        {
+            throw new OrderNotFoundException();
+        }
+
+        return $this->orderTransformer->entityToDomain($order);
     }
 
     public function find($id): ?Identifiable
@@ -35,11 +36,17 @@ class OrderReadRepository implements Repository
 
     public function findAll(): array
     {
-       return $this->repository->findAll();
+        $order = new \App\Eloquent\Models\Order();
+        return $this->orderTransformer->entityToDomainMany($order);
     }
 
     public function remove($id): void
     {
         // TODO: Implement remove() method.
+    }
+
+    public function save(Identifiable $data): void
+    {
+        // TODO: Implement save() method.
     }
 }

@@ -3,6 +3,8 @@
 
 namespace App\Repositories;
 
+use App\Domain\Interfaces\OrderDomainInterface;
+use App\Eloquent\Transformers\OrderTransformer;
 use App\Order;
 use Broadway\Domain\AggregateRoot;
 use Broadway\EventHandling\EventBus;
@@ -22,5 +24,14 @@ class OrderRepository extends EventSourcingRepository
             Order::class,
             new NamedConstructorAggregateFactory(),
             $eventStreamDecorators);
+    }
+
+    public function save(AggregateRoot|OrderDomainInterface $aggregate): void
+    {
+        parent::save($aggregate);
+
+        $orderTransformer = new OrderTransformer();
+        $entity = $orderTransformer->domainToEntity($aggregate);
+        $entity->save();
     }
 }

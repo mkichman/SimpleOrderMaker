@@ -24,6 +24,7 @@
 
 <a href="/" class="ml-4"> Home </a>
 <a href="/placeOrder" class="ml-4"> Start order </a>
+<a href="/allOrders" class="ml-4"> Orders </a>
 
 @yield('content')
 
