@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Commands;
+namespace App\Src\Application\Command;
 
 
 final class CreateOrderCommand

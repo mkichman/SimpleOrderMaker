@@ -3,28 +3,23 @@
 
 namespace App\Providers;
 
-use Broadway\CommandHandling\SimpleCommandBus;
+use App\Src\Application\Command\CreateOrderCommand;
+use App\Src\Application\Handler\CreateOrderHandler;
+use App\Src\Domain\OrderRepositoryInterface;
+use App\Src\Infrastructure\FileOrderRepository;
 use Broadway\EventHandling\SimpleEventBus;
-use Broadway\ReadModel\InMemory\InMemoryRepository;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\ServiceProvider;
 
 class OrderServiceProvider extends ServiceProvider
 {
+    public array $bindings = [
+        OrderRepositoryInterface::class => FileOrderRepository::class,
+        ];
+
     public function register()
     {
-        $this->registerCommandBus();
         $this->registerEventBus();
-        $this->registerInMemoryRepository();
-    }
-
-    private function registerInMemoryRepository()
-    {
-        /**
-         * @todo
-         */
-        $this->app->singleton('inMemoryRepository', function() {
-            return new InMemoryRepository();
-        });
     }
 
     private function registerEventBus()
@@ -34,10 +29,12 @@ class OrderServiceProvider extends ServiceProvider
         });
     }
 
-    private function registerCommandBus()
+    public function boot(): void
     {
-        $this->app->bind('commandBus', function() {
-            return new SimpleCommandBus();
-        });
+        Bus::map(
+            [
+                CreateOrderCommand::class => CreateOrderHandler::class,
+            ]
+        );
     }
 }
